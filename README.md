@@ -3,11 +3,11 @@
 </p>
 
 # ExternalDNS
-[![Build Status](https://travis-ci.org/kubernetes-incubator/external-dns.svg?branch=master)](https://travis-ci.org/kubernetes-incubator/external-dns)
-[![Coverage Status](https://coveralls.io/repos/github/kubernetes-incubator/external-dns/badge.svg?branch=master)](https://coveralls.io/github/kubernetes-incubator/external-dns?branch=master)
-[![GitHub release](https://img.shields.io/github/release/kubernetes-incubator/external-dns.svg)](https://github.com/kubernetes-incubator/external-dns/releases)
-[![go-doc](https://godoc.org/github.com/kubernetes-incubator/external-dns?status.svg)](https://godoc.org/github.com/kubernetes-incubator/external-dns)
-[![Go Report Card](https://goreportcard.com/badge/github.com/kubernetes-incubator/external-dns)](https://goreportcard.com/report/github.com/kubernetes-incubator/external-dns)
+[![Build Status](https://travis-ci.org/kubernetes-sigs/external-dns.svg?branch=master)](https://travis-ci.org/kubernetes-sigs/external-dns)
+[![Coverage Status](https://coveralls.io/repos/github/kubernetes-sigs/external-dns/badge.svg?branch=master)](https://coveralls.io/github/kubernetes-sigs/external-dns?branch=master)
+[![GitHub release](https://img.shields.io/github/release/kubernetes-sigs/external-dns.svg)](https://github.com/kubernetes-sigs/external-dns/releases)
+[![go-doc](https://godoc.org/github.com/kubernetes-sigs/external-dns?status.svg)](https://godoc.org/github.com/kubernetes-sigs/external-dns)
+[![Go Report Card](https://goreportcard.com/badge/github.com/kubernetes-sigs/external-dns)](https://goreportcard.com/report/github.com/kubernetes-sigs/external-dns)
 
 ExternalDNS synchronizes exposed Kubernetes Services and Ingresses with DNS providers.
 
@@ -53,7 +53,7 @@ Note that all flags can be replaced with environment variables; for instance,
 
 ## Status of providers
 
-ExternalDNS supports multiple DNS providers which have been implemented by the [ExternalDNS contributors](https://github.com/kubernetes-incubator/external-dns/graphs/contributors). Maintaining all of those in a central repository is a challenge and we have limited resources to test changes. This means that it is very hard to test all providers for possible regressions and, as written in the [Contributing](#Contributing) section, we encourage contributors to step in as maintainers for the individual providers and help by testing the integrations.
+ExternalDNS supports multiple DNS providers which have been implemented by the [ExternalDNS contributors](https://github.com/kubernetes-sigs/external-dns/graphs/contributors). Maintaining all of those in a central repository is a challenge and we have limited resources to test changes. This means that it is very hard to test all providers for possible regressions and, as written in the [Contributing](#Contributing) section, we encourage contributors to step in as maintainers for the individual providers and help by testing the integrations.
 
 End-to-end testing of ExternalDNS is currently
 [performed](https://github.com/zalando-incubator/kubernetes-on-aws/blob/dev/test/e2e/external_dns.go)
@@ -110,7 +110,8 @@ The following tutorials are provided:
 	* [Route53](docs/tutorials/aws.md)
 		* [Same domain for public and private Route53 zones](docs/tutorials/public-private-route53.md)
 	* [Service Discovery](docs/tutorials/aws-sd.md)
-* [Azure](docs/tutorials/azure.md)
+* [Azure DNS](docs/tutorials/azure.md)
+* [Azure Private DNS](docs/tutorials/azure-private-dns.md)
 * [Cloudflare](docs/tutorials/cloudflare.md)
 * [CoreDNS](docs/tutorials/coredns.md)
 * [DigitalOcean](docs/tutorials/digitalocean.md)
@@ -151,7 +152,7 @@ Make sure you have the following prerequisites:
 First, get ExternalDNS:
 
 ```console
-$ git clone https://github.com/kubernetes-incubator/external-dns.git && cd external-dns
+$ git clone https://github.com/kubernetes-sigs/external-dns.git && cd external-dns
 ```
 
 **This project uses [Go modules](https://github.com/golang/go/wiki/Modules) as
@@ -162,7 +163,6 @@ support](https://github.com/golang/go/wiki/Modules#installing-and-activating-mod
 Assuming Go has been setup with module support it can be built simply by running:
 
 ```console
-$ export GO111MODULE=on # needed if the project is checked out in your $GOPATH.
 $ make
 ```
 
@@ -195,7 +195,9 @@ Locally run a single sync loop of ExternalDNS.
 $ external-dns --registry txt --txt-owner-id my-cluster-id --provider google --google-project example-project --source service --once --dry-run
 ```
 
-This should output the DNS records it will modify to match the managed zone with the DNS records you desire. Note TXT records having `my-cluster-id` value embedded. Those are used to ensure that ExternalDNS is aware of the records it manages.
+This should output the DNS records it will modify to match the managed zone with the DNS records you desire. It also assumes you are running in the `default` namespace. See the [FAQ](docs/faq.md) for more information regarding namespaces.
+
+Note: TXT records will have `my-cluster-id` value embedded. Those are used to ensure that ExternalDNS is aware of the records it manages.
 
 Once you're satisfied with the result, you can run ExternalDNS like you would run it in your cluster: as a control loop, and **not in dry-run** mode:
 
@@ -260,6 +262,7 @@ Here's a rough outline on what is to come (subject to change):
 - [x] Support for RcodeZero
 - [x] Support for NS1
 - [x] Support for TransIP
+- [x] Support for Azure Private DNS
 
 ### v0.6
 
@@ -280,7 +283,7 @@ Here's a rough outline on what is to come (subject to change):
 * Support for CRDs
 * Support for more advanced DNS record configurations
 
-Have a look at [the milestones](https://github.com/kubernetes-incubator/external-dns/milestones) to get an idea of where we currently stand.
+Have a look at [the milestones](https://github.com/kubernetes-sigs/external-dns/milestones) to get an idea of where we currently stand.
 
 ## Contributing
 

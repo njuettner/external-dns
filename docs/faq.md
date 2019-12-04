@@ -151,11 +151,11 @@ spec:
 
 ### I have a Service/Ingress but it's ignored by ExternalDNS. Why?
 
-ExternalDNS can be configured to only use Services or Ingresses as source. In case Services or Ingresses seem to be ignored in your setup, consider checking how the flag `--source` was configured when deployed. For reference, see the issue https://github.com/kubernetes-incubator/external-dns/issues/267.
+ExternalDNS can be configured to only use Services or Ingresses as source. In case Services or Ingresses seem to be ignored in your setup, consider checking how the flag `--source` was configured when deployed. For reference, see the issue https://github.com/kubernetes-sigs/external-dns/issues/267.
 
 ### I'm using an ELB with TXT registry but the CNAME record clashes with the TXT record. How to avoid this?
 
-CNAMEs cannot co-exist with other records, therefore you can use the `--txt-prefix` flag which makes sure to create a TXT record with a name following the pattern `prefix.<CNAME record>`. For reference, see the issue https://github.com/kubernetes-incubator/external-dns/issues/262.
+CNAMEs cannot co-exist with other records, therefore you can use the `--txt-prefix` flag which makes sure to create a TXT record with a name following the pattern `prefix.<CNAME record>`. For reference, see the issue https://github.com/kubernetes-sigs/external-dns/issues/262.
 
 ### Can I force ExternalDNS to create CNAME records for ELB/ALB?
 
@@ -260,7 +260,7 @@ and one with `--annotation-filter=kubernetes.io/ingress.class=nginx-external`.
 
 ### Can external-dns manage(add/remove) records in a hosted zone which is setup in different AWS account?
 
-Yes, give it the correct cross-account/assume-role permissions and use the `--aws-assume-role` flag https://github.com/kubernetes-incubator/external-dns/pull/524#issue-181256561
+Yes, give it the correct cross-account/assume-role permissions and use the `--aws-assume-role` flag https://github.com/kubernetes-sigs/external-dns/pull/524#issue-181256561
 
 ### How do I provide multiple values to the annotation `external-dns.alpha.kubernetes.io/hostname`?
 
@@ -280,3 +280,12 @@ As tags, you can use your version of choice or use `latest` that always resolves
 If you wish to build your own image, you can use the provided [Dockerfile](../Dockerfile) as a starting point.
 
 We are currently working with the Kubernetes community to provide official images for the project similarly to what is done with the other official Kubernetes projects, but we don't have an ETA on when those images will be available.
+
+### Why am I seeing time out errors even though I have connectivity to my cluster?
+
+If you're seeing an error such as this:
+```
+FATA[0060] failed to sync cache: timed out waiting for the condition
+```
+
+You may not have the correct permissions required to query all the necessary resources in your kubernetes cluster. Specifically, you may be running in a `namespace` that you don't have these permissions in. By default, commands are run against the `default` namespace. Try changing this to your particular namespace to see if that fixes the issue.
